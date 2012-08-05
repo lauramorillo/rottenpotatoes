@@ -8,11 +8,9 @@ class MoviesController < ApplicationController
 
   def index
 
-    if params[:order].nil? && params[:ratings].nil?
-      if session[:order].present? || session[:ratings].present?
-        flash.keep
-        redirect_to :action => "index", :ratings => session[:ratings], :order => session[:order]
-      end
+    if params[:order].nil? && params[:ratings].nil? && (session[:order].present? || session[:ratings].present?)
+      flash.keep
+      redirect_to :action => "index", :ratings => session[:ratings], :order => session[:order]
     else
       session[:order] = params[:order] if params[:order].present?
       session[:ratings] = params[:ratings] if params[:ratings].present?
