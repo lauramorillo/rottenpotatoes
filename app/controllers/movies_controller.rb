@@ -10,6 +10,7 @@ class MoviesController < ApplicationController
     @movies = Movie.scoped(:conditions => {})
     if !params[:order].nil?
       @movies = @movies.order(params[:order])
+      params[:order] = params[:order]
     end
   end
 
