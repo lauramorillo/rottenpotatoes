@@ -7,13 +7,23 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.scoped(:conditions => {})
-    @all_ratings = Movie.ratings
-    if !params[:order].nil?
-      @movies = @movies.order(params[:order])
-      params[:order] = params[:order]
+
+    if params[:order].nil? && params[:ratings].nil?
+      if session[:order].present? || session[:ratings].present?
+        flash.keep
+        redirect_to :action => "index", :ratings => session[:ratings], :order => session[:order]
+      end
+    else
+      session[:order] = params[:order] if params[:order].present?
+      session[:ratings] = params[:ratings] if params[:ratings].present?
+
+      @movies = Movie.scoped(:conditions => {})
+      @all_ratings = Movie.ratings
+      if session[:order].present?
+        @movies = @movies.order(session[:order])
+      end
+      @movies = @movies.where(:rating => session[:ratings].try(:keys))
     end
-    @movies = @movies.where(:rating => params[:ratings].try(:keys))
   end
 
   def new
