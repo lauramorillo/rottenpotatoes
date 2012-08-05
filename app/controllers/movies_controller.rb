@@ -8,10 +8,12 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.scoped(:conditions => {})
+    @all_ratings = Movie.ratings
     if !params[:order].nil?
       @movies = @movies.order(params[:order])
       params[:order] = params[:order]
     end
+    @movies = @movies.where(:rating => params[:ratings].try(:keys))
   end
 
   def new
